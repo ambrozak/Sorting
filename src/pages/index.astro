@@ -35,7 +35,7 @@
 			canvas{
 				height: 100vh;
 				width: 80vw;
-				background-color: #f51515;
+				background-color: #151515;
 				position: absolute;
 				left: 0;
 				top: 0;
@@ -73,8 +73,14 @@
 			<button onclick="randomize()">
 				Randomize
 			</button>
-			<button onclick="moveFirst()">
-				Move
+			<p></p>
+			<select name="sorts" id="selector">
+				<option value="insertion">Insertion Sort</option>
+				<option value="merge">Merge Sort</option>
+			</select>
+			<p></p>
+			<button onclick="selectSort()">
+				Sort
 			</button>
 		</div>
 		<canvas id="canv">
