@@ -19,6 +19,7 @@ function setup() {
     // Update the current slider value (each time you drag the slider handle)
     numSlider.oninput = function() {
       counter.innerHTML = "Elements: " + this.value;
+      generate();
     }
 
     //Sliders
@@ -32,7 +33,7 @@ function setup() {
       speed = this.value;
     }
 
-
+    generate();
 }
 
 class Square{
@@ -91,13 +92,7 @@ function generate(){
   }
   squares = [];
   let count = document.getElementById("count").value;
-  if(isNaN(count)){count = 100}
-  if(count > 240){
-    count = 240;
-  }
-  if(count < 5){
-    count = 5;
-  }
+  
   size = windowWidth / (count * 2.5);
   spacing = Math.floor(240/count) * 4.5;
   for(let i = 0; i < 240; i += Math.floor(240/count)){
@@ -115,6 +110,7 @@ function draw(){
 }
 
 async function randomize(){
+  document.getElementById("count").disabled = true;
   if(sorting){
     return;
   }
@@ -134,19 +130,23 @@ async function randomize(){
       await sleep(10);
     }
   }
+  document.getElementById("count").disabled = false;
 }
 
 
 async function selectSort(){
   sorting = true;
+  document.getElementById("count").disabled = true;
   var selector = document.getElementById("selector");
   var selection = selector.value;
-  if(selection == "insertion"){insertionSort()}
+  if(selection == "insertion"){await insertionSort()}
   if(selection == "merge"){
     let tempList = squares.slice(0, squares.length);
     tempList = await mergeSort(tempList);
     squares = tempList;
+    sorting = false;
   }
+  document.getElementById("count").disabled = false;
 }
 
 async function insertionSort(){
@@ -250,7 +250,6 @@ async function mergeSort(list){
       pointerRight++;
     }
   }
-  sorting = false;
   return list;
 
 }
