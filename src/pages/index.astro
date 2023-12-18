@@ -6,28 +6,79 @@
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Sorting</title>
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+		<script type="text/javascript" src="src/script.js"></script>
 		<style>
 			html, body{
 				height: 100%;
 				min-height: 100%;
-				background-color: #202020;
-				overflow-y: hidden;
+				/*overflow-y: hidden;
+				overflow-x: hidden;*/
+				margin: 0;
 			}
 			.controlArea{
 				min-height: 100%;
 				height: 100vh;
-				width: 300px;
-				background-color: #353535;
-				z-index: 1;
+				width: 20vw;
+				background-color: #272727;
+				position: absolute;
+				text-align: center;
+				left: 0;
+				top: 0;
+				z-index: 20;
+			}
+			h2, p{
+				text-align:center;
+				color: #ffffff;
+				font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode';
+			}
+			canvas{
+				height: 100vh;
+				width: 80vw;
+				background-color: #f51515;
 				position: absolute;
 				left: 0;
 				top: 0;
+				overflow-x: hidden;
+				margin-left: 20vw;
 			}
+			button{
+				font-family:'Lucida Sans';
+			}
+			input{
+				width:15vw;
+				vertical-align:bottom;
+			}
+			span{
+				font-family:'Lucida Sans';
+				color:#ffffff;
+			}
+
 		</style>
 	</head>
 	<body>
 		<div class="controlArea">
-	
+			<h2>Sorting Visualization</h2>
+			<p>Made by Simon Ambrozak</p>
+			<span id="number"></span>
+			<input type="range" id="count" min="5" max="50" value="25"></input>
+			<p></p>
+			<span id="speedNumber"></span>
+			<input type="range" id="speed" min="1" max="100" value="50"></input>
+			<p></p>
+			<button onclick="generate()">
+				Generate
+			</button>
+			
+			<button onclick="randomize()">
+				Randomize
+			</button>
+			<button onclick="moveFirst()">
+				Move
+			</button>
 		</div>
+		<canvas id="canv">
+
+		</canvas>
 	</body>
 </html>
