@@ -229,6 +229,9 @@ async function bubbleSort(){
   //Begin Sort
   for(let end = squares.length - 1; end > 0; end--){
     for(let i = 0; i < end; i++){
+      squares[i].move(0, -(size + 20));
+      squares[i+1].move(0, -(size + 20));
+      while(squares[i].done == false) { await sleep(10); }
       if(squares[i].compareTo(squares[i+1])){
         squares[i].move(squares[i+1].x - squares[i].x, 0);
         squares[i+1].move(squares[i].x - squares[i+1].x, 0);
@@ -237,21 +240,17 @@ async function bubbleSort(){
         squares[i] = squares[i+1];
         squares[i+1] = tempSquare;
       }
+      squares[i].move(0, (size + 20));
+      squares[i+1].move(0, (size + 20));
+      while(squares[i].done == false) { await sleep(10); }
     }
+    squares[end].move(0, -400);
   }
+  squares[0].move(0, -400);
 
-  //Move back up
-  document.getElementById("speed").disabled = true;
-  tempSpeed = speed;
-  speed = 10;
-  for(let i = 0; i < squares.length; i++){
-    squares[i].move(0, -400);
-  }
-  
-  while(squares[squares.length - 1].done == false) { await sleep(10); }
-  speed = tempSpeed;
+  while(squares[0].done == false) { await sleep(10); }
+
   sorting = false;
-  document.getElementById("speed").disabled = false;
 }
 
 async function mergeSort(list){
