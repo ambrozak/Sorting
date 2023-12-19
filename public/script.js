@@ -135,14 +135,28 @@ async function randomize(){
 
 
 async function selectSort(){
+  if(sorting){
+    return;
+  }
   sorting = true;
   document.getElementById("count").disabled = true;
   var selector = document.getElementById("selector");
   var selection = selector.value;
+
   if(selection == "insertion"){await insertionSort()}
+
+  if(selection == "bubble"){await bubbleSort() }
+
   if(selection == "merge"){
     let tempList = squares.slice(0, squares.length);
     tempList = await mergeSort(tempList);
+    squares = tempList;
+    sorting = false;
+  }
+
+  if(selection == "quick"){
+    let tempList = squares.slice(0, squares.length);
+    tempList = await quickSort(tempList);
     squares = tempList;
     sorting = false;
   }
@@ -151,6 +165,7 @@ async function selectSort(){
 
 async function insertionSort(){
   //Move em down
+  document.getElementById("speed").disabled = true;
   let tempSpeed = speed;
   speed = 10;
   for(let i = 0; i < squares.length; i++){
@@ -160,6 +175,7 @@ async function insertionSort(){
   while(squares[squares.length - 1].done == false) { await sleep(10); }
   speed = tempSpeed;
 
+  document.getElementById("speed").disabled = false;
   // Sorting
   for(let i = 1; i < squares.length; i++){
     squares[i].move(0, -(size + 20))
@@ -181,8 +197,9 @@ async function insertionSort(){
     squares[pos].move(0, (size + 20))
     while(squares[pos].done == false) { await sleep(10); }
   }
+
   //Move back up
-  //Move em down
+  document.getElementById("speed").disabled = true;
   tempSpeed = speed;
   speed = 10;
   for(let i = 0; i < squares.length; i++){
@@ -192,8 +209,50 @@ async function insertionSort(){
   while(squares[squares.length - 1].done == false) { await sleep(10); }
   speed = tempSpeed;
   sorting = false;
+  document.getElementById("speed").disabled = false;
 }
 
+async function bubbleSort(){
+  //Move em down
+  document.getElementById("speed").disabled = true;
+  let tempSpeed = speed;
+  speed = 10;
+  for(let i = 0; i < squares.length; i++){
+    squares[i].move(0, 400);
+  }
+  
+  while(squares[squares.length - 1].done == false) { await sleep(10); }
+  speed = tempSpeed;
+
+  document.getElementById("speed").disabled = false;
+
+  //Begin Sort
+  for(let end = squares.length - 1; end > 0; end--){
+    for(let i = 0; i < end; i++){
+      if(squares[i].compareTo(squares[i+1])){
+        squares[i].move(squares[i+1].x - squares[i].x, 0);
+        squares[i+1].move(squares[i].x - squares[i+1].x, 0);
+        while(squares[i].done == false) { await sleep(10); }
+        let tempSquare = squares[i];
+        squares[i] = squares[i+1];
+        squares[i+1] = tempSquare;
+      }
+    }
+  }
+
+  //Move back up
+  document.getElementById("speed").disabled = true;
+  tempSpeed = speed;
+  speed = 10;
+  for(let i = 0; i < squares.length; i++){
+    squares[i].move(0, -400);
+  }
+  
+  while(squares[squares.length - 1].done == false) { await sleep(10); }
+  speed = tempSpeed;
+  sorting = false;
+  document.getElementById("speed").disabled = false;
+}
 
 async function mergeSort(list){
   //Stopping case
@@ -250,6 +309,65 @@ async function mergeSort(list){
       pointerRight++;
     }
   }
+  return list;
+
+}
+
+
+async function quickSort(list){
+  //Stopping case
+  if(list.length < 2){
+    return list;
+  }
+
+  var firstX = list[0].x;
+  var lastX = list[list.length - 1].x;
+
+  var pivot = list[Math.floor(Math.random() * list.length)];
+  pivot.move(0, size + 20);
+  while(pivot.done == false) { await sleep(10); }
+  
+  var left = [];
+  var right = [];
+  
+  for(let i = 0; i < list.length; i++){
+    if(list[i] == pivot){continue;}
+    if(pivot.compareTo(list[i])){
+      list[i].move(firstX + spacing * left.length - list[i].x, 2 * size + 40);
+      while(list[i].done == false) { await sleep(10); }
+      left.push(list[i]);
+    } else {
+      list[i].move(lastX - spacing * right.length - list[i].x, 2 * size + 40);
+      while(list[i].done == false) { await sleep(10); }
+      right.unshift(list[i]);
+    }
+  }
+  pivot.move(firstX + spacing * left.length - pivot.x, 0);
+  while(pivot.done == false) { await sleep(10); }
+
+  left = await (quickSort(left));
+  right = await (quickSort(right));
+
+  for(let i = 0; i < left.length; i++){
+    left[i].move(0, -(2 * size + 40));
+  }
+  if(left.length > 0){
+    while(left[0].done == false) { await sleep(10); }
+  }
+
+  for(let i = 0; i < right.length; i++){
+    right[i].move(0, -(2 * size + 40));
+  }
+  if(right.length > 0){
+    while(right[0].done == false) { await sleep(10); }
+  }
+
+  pivot.move(0, -(size+20));
+  while(pivot.done == false) { await sleep(10); }
+
+  
+  list = left.concat(pivot).concat(right);
+
   return list;
 
 }
